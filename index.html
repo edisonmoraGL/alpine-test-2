@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="./main.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+</head>
+
+<body>
+    <div class="container" x-data="items()">
+        <div class="btns-container">
+            <button class="waves-effect waves-light btn btn-action" @click="addItemToRemove()">
+                <i class="material-icons right">arrow_forward</i>add
+            </button>
+        </div>
+        <div class="btns-container">
+            <button class="waves-effect waves-light btn btn-action" @click="addItemToAdd()">
+                <i class="material-icons left">arrow_backward</i>remove
+            </button>
+        </div>
+        <div class="items-container">
+            <ul>
+                <template x-for="item in itemsToAdd" :key="item.id">
+                    <li class="item">
+                        <span x-text="item.title"></span>
+                        <button class="btn-close" @click="deleteItemToAdd(item.id)">
+                            <i class="material-icons">close</i>
+                        </button>
+                    </li>
+                </template>
+            </ul>
+        </div>
+        <div class="items-container">
+            <ul>
+                <template x-for="item in itemsToRemove" :key="item.id">
+                    <li class="item">
+                        <span x-text="item.title"></span>
+                        <button class="btn-close" @click="deleteItemToRemove(item.id)">
+                            <i class="material-icons">close</i>
+                        </button>
+                    </li>
+                </template>
+            </ul>
+        </div>
+        <div class="input-container">
+            <input type="text" placeholder="Add item" x-model="itemTitle" @keydown.enter="addItem()">
+            <button class="btn-floating btn-large waves-effect waves-light red" x-model="itemTitle" @click="addItem()">
+                <i class="material-icons">add</i>
+            </button>
+        </div>
+    </div>
+    <script>
+        function items() {
+            return {
+                itemsToAdd: [
+                    {
+                        id: 1,
+                        title: 'Item 1',
+                        isComplete: true
+                    },
+                    {
+                        id: 2,
+                        title: 'Item 2',
+                        isComplete: false
+                    },
+                    {
+                        id: 3,
+                        title: 'Item 3',
+                        isComplete: false
+                    }
+                ],
+                itemsToRemove: [
+                    {
+                        id: 4,
+                        title: 'Item 4',
+                        isComplete: false
+                    }
+                ],
+                itemTitle: '',
+                itemId: 5,
+                addItem() {
+                    if (this.itemTitle.trim() === '') return;
+
+                    this.itemsToAdd.push({
+                        id: this.itemId,
+                        title: this.itemTitle,
+                        isComplete: false
+                    });
+
+                    this.itemTitle = '';
+                    this.itemId = this.itemId + 1;
+                },
+                deleteItemToAdd(id) {
+                    this.itemsToAdd = this.itemsToAdd.filter(item => item.id !== id)
+                },
+                deleteItemToRemove(id) {
+                    this.itemsToRemove = this.itemsToRemove.filter(item => item.id !== id)
+                },
+                addItemToRemove() {
+                    this.itemsToRemove.push(this.itemsToAdd.shift())
+                },
+                addItemToAdd() {
+                    this.itemsToAdd.push(this.itemsToRemove.pop())
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
